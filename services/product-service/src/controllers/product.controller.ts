@@ -7,10 +7,14 @@ import {
   productIdSchema,
   updateProductSchema,
 } from "../schemas/product.schema.js";
+import { publishProductEvent } from "../events/product-events.js";
 
 export const listProducts: RequestHandler = async (req, res) => {
   const page = Math.max(1, Number.parseInt(String(req.query.page ?? "1"), 10) || 1);
-  const limit = Math.min(100, Math.max(1, Number.parseInt(String(req.query.limit ?? "20"), 10) || 20));
+  const limit = Math.min(
+    100,
+    Math.max(1, Number.parseInt(String(req.query.limit ?? "20"), 10) || 20),
+  );
   const category = typeof req.query.category === "string" ? req.query.category.trim() : undefined;
   const where: Prisma.ProductWhereInput = {
     isActive: true,
@@ -27,7 +31,10 @@ export const listProducts: RequestHandler = async (req, res) => {
     prisma.product.count({ where }),
   ]);
 
-  res.json({ data: items, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } });
+  res.json({
+    data: items,
+    pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+  });
 };
 
 export const getProduct: RequestHandler = async (req, res) => {
@@ -45,6 +52,7 @@ export const createProduct: RequestHandler = async (req, res) => {
       price: new Prisma.Decimal(input.price),
     },
   });
+  publishProductEvent("product.created", product);
   res.status(201).json({ data: product });
 };
 
@@ -61,6 +69,7 @@ export const updateProduct: RequestHandler = async (req, res) => {
       ...(input.price !== undefined ? { price: new Prisma.Decimal(input.price) } : {}),
     },
   });
+  publishProductEvent("product.updated", product);
   res.json({ data: product });
 };
 

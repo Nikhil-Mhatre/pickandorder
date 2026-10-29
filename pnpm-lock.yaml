@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  kafkajs@2.2.4: 3ae7aa2baea9ca3f00e636c173de51537854a192d9b763aabb02b7d7841d0e26
+
 importers:
 
   .: {}
@@ -25,6 +28,9 @@ importers:
       helmet:
         specifier: ^8.1.0
         version: 8.3.0
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4(patch_hash=3ae7aa2baea9ca3f00e636c173de51537854a192d9b763aabb02b7d7841d0e26)
       pino:
         specifier: ^9.6.0
         version: 9.14.0
@@ -506,6 +512,10 @@ packages:
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
+
+  kafkajs@2.2.4:
+    resolution: {integrity: sha512-j/YeapB1vfPT2iOIUn/vxdyKEuhuY2PxMBvf5JWux6iSaukAccrMtXEY/Lb7OvavDhOWME589bpLrEdnVHjfjA==}
+    engines: {node: '>=14.0.0'}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -1160,6 +1170,8 @@ snapshots:
   is-promise@4.0.0: {}
 
   jiti@2.7.0: {}
+
+  kafkajs@2.2.4(patch_hash=3ae7aa2baea9ca3f00e636c173de51537854a192d9b763aabb02b7d7841d0e26): {}
 
   math-intrinsics@1.1.0: {}
 
