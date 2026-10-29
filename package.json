@@ -1,0 +1,11 @@
+{
+  "name": "pickandorder",
+  "private": true,
+  "scripts": {
+    "dev:product": "pnpm --filter @pickandorder/product-service dev",
+    "build:product": "pnpm --filter @pickandorder/product-service build",
+    "start:product": "pnpm --filter @pickandorder/product-service start",
+    "db:generate:product": "pnpm --filter @pickandorder/product-service db:generate",
+    "db:migrate:product": "pnpm --filter @pickandorder/product-service db:migrate"
+  }
+}
