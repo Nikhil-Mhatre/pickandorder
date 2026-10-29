@@ -1,0 +1,80 @@
+# PickAndOrder Product Service
+# Run from the monorepo root:
+#   docker compose -f compose.yaml config
+#   docker compose -f compose.yaml up --build -d
+#
+# PostgreSQL (Neon) and Kafka (Aiven) are managed services; this Compose file
+# intentionally does not start local database or Kafka containers.
+
+services:
+  product-service:
+    # Compose builds from the repository root so pnpm workspace files are available.
+    build:
+      context: .
+      dockerfile: services/product-service/Dockerfile
+
+    image: pickandorder-product-service:local
+
+    # Publish the container's HTTP port on the host.
+    ports:
+      - "${PRODUCT_SERVICE_HOST_PORT:-3001}:3001"
+
+    # Local development convenience. Keep this file out of version control.
+    # For production, inject secrets through your platform's secret manager.
+    env_file:
+      - path: ./services/product-service/.env
+        required: true
+
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      # This is the path INSIDE the container, not the host path.
+      KAFKA_CA_PATH: /app/services/product-service/certs/aiven-ca.pem
+
+    # Mount only the public CA certificate read-only. Do not mount client private
+    # keys here unless the Aiven connection is deliberately configured for mTLS.
+    volumes:
+      - type: bind
+        source: ./services/product-service/certs/aiven-ca.pem
+        target: /app/services/product-service/certs/aiven-ca.pem
+        read_only: true
+        bind:
+          create_host_path: false
+
+    # Container hardening. Validate these settings with the application before
+    # using them in production.
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+    # Docker restarts the process if it exits. It does not restart a merely
+    # unhealthy process; health status is for monitoring and orchestration.
+    restart: unless-stopped
+
+    # Checks the HTTP health endpoint. This does not independently verify
+    # PostgreSQL or Kafka connectivity after startup.
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3001/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+    # Avoid logging unlimited output to Docker's default json-file log driver.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    stop_signal: SIGTERM
+    stop_grace_period: 15s

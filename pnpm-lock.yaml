@@ -3,6 +3,7 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
 
 patchedDependencies:
   kafkajs@2.2.4: 3ae7aa2baea9ca3f00e636c173de51537854a192d9b763aabb02b7d7841d0e26
