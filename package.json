@@ -6,6 +6,7 @@
     "build:product": "pnpm --filter @pickandorder/product-service build",
     "start:product": "pnpm --filter @pickandorder/product-service start",
     "db:generate:product": "pnpm --filter @pickandorder/product-service db:generate",
-    "db:migrate:product": "pnpm --filter @pickandorder/product-service db:migrate"
+    "db:migrate:product": "pnpm --filter @pickandorder/product-service db:migrate",
+    "db:seed:product": "pnpm --filter @pickandorder/product-service db:seed"
   }
 }
