@@ -22,4 +22,15 @@ export const logger = pino({
     ],
     censor: "[REDACTED]",
   },
+  ...(env.NODE_ENV === "development" && {
+    transport: {
+      target: "pino-pretty",
+      options: {
+        colorize: true,
+        translateTime: "SYS:standard",
+        ignore: "pid,hostname",
+        singleLine: false,
+      },
+    },
+  }),
 });

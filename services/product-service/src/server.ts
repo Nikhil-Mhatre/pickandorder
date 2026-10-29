@@ -9,6 +9,10 @@ let server: Server | undefined;
 let shuttingDown = false;
 
 async function startServer(): Promise<void> {
+  // Connect to PostgreSQL first.
+  await prisma.$connect();
+  logger.info("Connected to PostgreSQL");
+
   // Connect to Kafka before accepting HTTP requests.
   if (env.KAFKA_ENABLED === true) {
     await connectKafkaProducer();
